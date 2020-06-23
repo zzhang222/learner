@@ -5,10 +5,7 @@ Created on Tue Jun 23 13:47:08 2020
 
 @author: zen
 """
-
-import numpy as np
-import matplotlib.pyplot as plt
-
+from learner.utils import accuracy
 import learner as ln
 from torch.utils.data import DataLoader
 import torchvision
@@ -25,9 +22,9 @@ class MNISTData(ln.Data):
         self.y_train = tr_loader.dataset.targets
         
         ts_loader = DataLoader(torchvision.datasets.MNIST('data/mnist', train=False, download=True))
-        X_test = ts_loader.dataset.data[:1000]
+        X_test = ts_loader.dataset.data
         self.X_test = X_test.view([X_test.shape[0],1,X_test.shape[1],X_test.shape[2]])*1.0/256
-        self.y_test = ts_loader.dataset.targets[:1000]
+        self.y_test = ts_loader.dataset.targets
 
 def main():
     device = 'gpu' # 'cpu' or 'gpu'
@@ -43,6 +40,8 @@ def main():
     batch_size = 64
     iterations = 500
     print_every = 10
+    callback = lambda data, net: print('{:<9}Accuracy: {:<25}'.format(
+        '', accuracy(net(data.X_test), data.y_test)), flush=True)
     
     net = ln.nn.CNN_FNN(in_channels, hidden_channels, out_channels, ind, outd)
     args = {
@@ -55,7 +54,7 @@ def main():
         'batch_size': batch_size,
         'print_every': print_every,
         'save': True,
-        'callback': None,
+        'callback': callback,
         'dtype': 'float',
         'device': device
     }
@@ -63,7 +62,7 @@ def main():
     ln.Brain.Init(**args)
     ln.Brain.Run()
     ln.Brain.Restore()
-    ln.Brain.Output()
+    ln.Brain.Output(data = False)
     
 if __name__ == '__main__':
     main()

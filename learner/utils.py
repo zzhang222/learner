@@ -43,6 +43,10 @@ def cross_entropy_loss(y_pred, y_label):
         return torch.mean(-torch.sum(torch.log_softmax(y_pred, dim=-1) * y_label, dim=-1))
     else:
         return torch.nn.CrossEntropyLoss()(y_pred, y_label.long())
+    
+def accuracy(x,y):
+    max_x, argmax_x = torch.max(x, dim = 1)
+    return torch.sum(argmax_x == y)/x.shape[0]
 
 def grad(y, x, create_graph=True, keepdim=False):
     '''
