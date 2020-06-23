@@ -27,10 +27,10 @@ class MNISTData(ln.Data):
         ts_loader = DataLoader(torchvision.datasets.MNIST('data/mnist', train=False, download=True))
         X_test = ts_loader.dataset.data[:1000]
         self.X_test = X_test.view([X_test.shape[0],1,X_test.shape[1],X_test.shape[2]])*1.0/256
-        self.y_test = ts_loader.dataset.targets
+        self.y_test = ts_loader.dataset.targets[:1000]
 
 def main():
-    device = 'cpu' # 'cpu' or 'gpu'
+    device = 'gpu' # 'cpu' or 'gpu'
     data = MNISTData()
     # FNN
     in_channels = data.X_train.shape[1]
