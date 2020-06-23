@@ -47,10 +47,7 @@ def cross_entropy_loss(y_pred, y_label):
 def accuracy(x,y):
     max_x, argmax_x = torch.max(x, dim = 1)
     argmax_x = argmax_x.float()
-    print(x.shape[0])
-    print(torch.sum(argmax_x == y))
-    print(torch.sum(argmax_x == y)/x.shape[0])
-    return torch.sum(argmax_x == y)/x.shape[0]
+    return torch.sum(argmax_x == y)/torch.tensor(x.shape[0])
 
 def grad(y, x, create_graph=True, keepdim=False):
     '''
