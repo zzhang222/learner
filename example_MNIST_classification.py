@@ -25,7 +25,7 @@ class MNISTData(ln.Data):
         self.y_train = tr_loader.dataset.targets
         
         ts_loader = DataLoader(torchvision.datasets.MNIST('data/mnist', train=False, download=True))
-        X_test = ts_loader.dataset.data
+        X_test = ts_loader.dataset.data[:1000]
         self.X_test = X_test.view([X_test.shape[0],1,X_test.shape[1],X_test.shape[2]])*1.0/256
         self.y_test = ts_loader.dataset.targets
 
@@ -34,8 +34,8 @@ def main():
     data = MNISTData()
     # FNN
     in_channels = data.X_train.shape[1]
-    hidden_channels = 100
-    out_channels = 100
+    hidden_channels = 32
+    out_channels = 64
     ind = data.X_train.shape[2]*data.X_train.shape[3]*out_channels
     outd = 10
     # training
@@ -64,8 +64,6 @@ def main():
     ln.Brain.Run()
     ln.Brain.Restore()
     ln.Brain.Output()
-    
-    plot(data, ln.Brain.Best_model())
     
 if __name__ == '__main__':
     main()
