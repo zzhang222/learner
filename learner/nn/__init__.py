@@ -6,6 +6,8 @@ from .module import StructureNN
 from .module import LossNN
 from .fnn import FNN
 from .hnn import HNN
+from .cnn import CNN
+from .cnn_fnn import CNN_FNN
 from .sympnet import LASympNet
 from .sympnet import GSympNet
 
@@ -15,6 +17,8 @@ __all__ = [
     'LossNN',
     'FNN',
     'HNN',
+    'CNN',
+    'CNN_FNN'
     'LASympNet',
     'GSympNet',
 ]

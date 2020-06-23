@@ -3,6 +3,7 @@
 """
 import abc
 import torch
+import torch.nn.functional as F
 
 class Module(torch.nn.Module):
     '''Standard module format. 
@@ -67,6 +68,8 @@ class Module(torch.nn.Module):
             return torch.tanh
         elif self.activation == 'elu':
             return torch.elu
+        elif self.activation == 'leaky relu':
+            return F.leaky_relu
         else:
             raise NotImplementedError
     
@@ -80,6 +83,8 @@ class Module(torch.nn.Module):
             return torch.nn.Tanh()
         elif self.activation == 'elu':
             return torch.nn.ELU()
+        elif self.activation == 'leaky relu':
+            return torch.nn.LeakyReLU(0.1)
         else:
             raise NotImplementedError
 

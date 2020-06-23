@@ -2,18 +2,18 @@
 @author: jpzxshi
 """
 import torch.nn as nn
-
 from .module import StructureNN
 
 class FNN(StructureNN):
     '''Fully connected neural networks.
     '''
-    def __init__(self, ind, outd, layers=2, width=50, activation='relu', initializer='default', softmax=False):
+    def __init__(self, ind, outd, layers=4, width=50, dropout = 0, activation='relu', initializer='default', softmax=False):
         super(FNN, self).__init__()
         self.ind = ind
         self.outd = outd
         self.layers = layers
         self.width = width
+        self.dropout = dropout
         self.activation = activation
         self.initializer = initializer
         self.softmax = softmax
@@ -24,8 +24,9 @@ class FNN(StructureNN):
     def forward(self, x):
         for i in range(1, self.layers):
             LinM = self.modus['LinM{}'.format(i)]
+            DropM = self.modus['DropM{}'.format(i)]
             NonM = self.modus['NonM{}'.format(i)]
-            x = NonM(LinM(x))
+            x = NonM(DropM(LinM(x)))
         x = self.modus['LinMout'](x)
         if self.softmax:
             x = nn.functional.softmax(x, dim=-1)
@@ -36,9 +37,11 @@ class FNN(StructureNN):
         if self.layers > 1:
             modules['LinM1'] = nn.Linear(self.ind, self.width)
             modules['NonM1'] = self.Act
+            modules['DropM1'] = nn.Dropout(p = self.dropout)
             for i in range(2, self.layers):
                 modules['LinM{}'.format(i)] = nn.Linear(self.width, self.width)
                 modules['NonM{}'.format(i)] = self.Act
+                modules['DropM{}'.format(i)] = nn.Dropout(p = self.dropout)
             modules['LinMout'] = nn.Linear(self.width, self.outd)
         else:
             modules['LinMout'] = nn.Linear(self.ind, self.outd)
@@ -51,3 +54,4 @@ class FNN(StructureNN):
             nn.init.constant_(self.modus['LinM{}'.format(i)].bias, 0)
         self.weight_init_(self.modus['LinMout'].weight)
         nn.init.constant_(self.modus['LinMout'].bias, 0)
+        

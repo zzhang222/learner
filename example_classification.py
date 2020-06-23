@@ -44,7 +44,7 @@ def main():
     print_every = 100
     
     data = CSData()
-    net = ln.nn.FNN(data.dim, data.K, depth, width, activation)
+    net = ln.nn.FNN(data.dim, data.K, depth, width, activation = activation)
     args = {
         'data': data,
         'net': net,
