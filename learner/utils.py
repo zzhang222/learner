@@ -51,6 +51,8 @@ def accuracy(x,y):
     print(y.dtype)
     print(argmax_x[:10])
     print(y[:10])
+    print(argmax_x == y)
+    print(torch.sum(argmax_x == y))
     return torch.sum(argmax_x == y)/x.shape[0]
 
 def grad(y, x, create_graph=True, keepdim=False):
