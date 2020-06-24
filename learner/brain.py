@@ -76,8 +76,8 @@ class Brain:
                 mask = np.random.choice(self.data.X_train.size(0), self.batch_size, replace=False)
                 loss = self.__criterion(self.net(self.data.X_train[mask]), self.data.y_train[mask])
                 z = self.net(self.data.X_train[mask])
-                print(torch.mean(z[:,:,0,:10]**2))
-                print(torch.mean(z[:,:,1:,:]**2))
+                print('Mean of Principle Variables{}: ',format(torch.mean(z[:,:,0,:10]**2)))
+                print('Mean of Other Variables{}: ',format(torch.mean(z[:,:,1:,:]**2)))
             else:
                 loss = self.__criterion(self.net(self.data.X_train), self.data.y_train)
             if i % self.print_every == 0 or i == self.iterations:
