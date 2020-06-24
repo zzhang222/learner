@@ -46,7 +46,7 @@ def cross_entropy_loss(y_pred, y_label):
         return torch.nn.CrossEntropyLoss()(y_pred, y_label.long())
     
 def z_loss(y_pred, y_label, keepdim = 10):
-    mask = torch.ones(y_pred.shape)
+    mask = torch.ones(y_pred.shape, device = y_pred.device)
     mask[:,:,0,:keepdim] = 0
     masked_y = y_pred*mask
     return torch.norm(masked_y)/np.sqrt(masked_y.numel()-keepdim)
