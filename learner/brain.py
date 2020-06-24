@@ -7,7 +7,7 @@ import numpy as np
 import torch
 
 from .nn import LossNN
-from .utils import timing, cross_entropy_loss
+from .utils import timing, cross_entropy_loss, z_loss
 
 class Brain:
     '''Runner based on torch.
@@ -75,6 +75,9 @@ class Brain:
             if self.batch_size is not None:
                 mask = np.random.choice(self.data.X_train.size(0), self.batch_size, replace=False)
                 loss = self.__criterion(self.net(self.data.X_train[mask]), self.data.y_train[mask])
+                z = self.net(self.data.X_train[mask])
+                print(torch.mean(z[:,:,0,:10]**2))
+                print(torch.mean(z[:,:,1:,:]**2))
             else:
                 loss = self.__criterion(self.net(self.data.X_train), self.data.y_train)
             if i % self.print_every == 0 or i == self.iterations:
@@ -158,5 +161,7 @@ class Brain:
             self.__criterion = torch.nn.MSELoss()
         elif self.criterion == 'CrossEntropy':
             self.__criterion = cross_entropy_loss
+        elif self.criterion == 'z_loss':
+            self.__criterion = z_loss
         else:
             raise NotImplementedError   
