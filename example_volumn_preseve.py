@@ -40,7 +40,7 @@ def main():
     # training
     lr = 0.01
     batch_size = 64
-    iterations = 500
+    iterations = 5000
     print_every = 10
     
     net = ln.nn.VPNN(in_channels, hidden_channels, out_channels, ind, outd, layers)
