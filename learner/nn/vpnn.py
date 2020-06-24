@@ -87,7 +87,7 @@ class VPModule_F(Module):
                 
 class VPNN(StructureNN):
     #Volumn Preserving Neural Networks (NICE)
-    def __init__(self, in_channels, channels_hidden, out_channels, ind, outd, layers_c, layers_f):
+    def __init__(self, in_channels, channels_hidden, out_channels, ind, outd, layers_c, layers_f, keep_dims):
         super(VPNN, self).__init__()
         self.in_channels = in_channels
         self.channels_hidden = channels_hidden
@@ -96,6 +96,7 @@ class VPNN(StructureNN):
         self.outd = outd
         self.layers_c = layers_c
         self.layers_f = layers_f
+        self.keep_dims = keep_dims
         self.modus = self.__init_modules()
             
         
