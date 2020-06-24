@@ -33,12 +33,14 @@ def callback(data, net):
     z = net(x_orig, reverse=False)
     mask = torch.zeros(z.shape, device = z.device)
     mask[:,:,0,:net.keep_dims] = 1
-    z = z*mask
-    x = net(z, reverse=True)
+    masked_z = z*mask
+    x = net(masked_z, reverse=True)
     x = torch.sigmoid(x)
+    x_check = net(z, reverse=True)
+    x_check = torch.sigmoid(x_check)
     os.makedirs('samples_MNIST', exist_ok=True)
     images_concat_orig = torchvision.utils.make_grid(x_orig, nrow=int(x_orig.shape[0] ** 0.5), padding=2, pad_value=255)
-    images_concat_recov = torchvision.utils.make_grid(x, nrow=int(x.shape[0] ** 0.5), padding=2, pad_value=255)
+    images_concat_recov = torchvision.utils.make_grid(x_check, nrow=int(x.shape[0] ** 0.5), padding=2, pad_value=255)
     torchvision.utils.save_image(images_concat_orig, 'samples_MNIST/original.png')
     torchvision.utils.save_image(images_concat_recov, 'samples_MNIST/recovered.png')
     
@@ -57,7 +59,7 @@ def main():
     # training
     lr = 0.01
     batch_size = 64
-    iterations = 5000
+    iterations = 0
     print_every = 10
     
     net = ln.nn.VPNN(in_channels, hidden_channels, out_channels, ind, outd, layers_c, layers_f, keep_dims)
