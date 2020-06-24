@@ -87,14 +87,15 @@ class VPModule_F(Module):
                 
 class VPNN(StructureNN):
     #Volumn Preserving Neural Networks (NICE)
-    def __init__(self, in_channels, channels_hidden, out_channels, ind, outd, layers):
+    def __init__(self, in_channels, channels_hidden, out_channels, ind, outd, layers_c, layers_f):
         super(VPNN, self).__init__()
         self.in_channels = in_channels
         self.channels_hidden = channels_hidden
         self.out_channels = out_channels
         self.ind = ind
         self.outd = outd
-        self.layers = layers
+        self.layers_c = layers_c
+        self.layers_f = layers_f
         self.modus = self.__init_modules()
             
         
@@ -102,28 +103,31 @@ class VPNN(StructureNN):
         shape = x.shape
         if reverse:
             x = x.flatten(start_dim = 1)
-            x = self.modus['VPMout'](x, reverse = reverse)
+            for i in range(self.layers_f, 0, -1):
+                x = self.modus['VPF{}'.format(i)](x, reverse = reverse)
             x = x.view([-1,shape[1],shape[2],shape[3]])
             x = squeeze_2x2(x, reverse = False)
-            for i in range(self.layers, 0, -1):
-                x = self.modus['VPM{}'.format(i)](x, reverse = reverse)
+            for i in range(self.layers_c, 0, -1):
+                x = self.modus['VPC{}'.format(i)](x, reverse = reverse)
             x = squeeze_2x2(x, reverse = True)
         else:
             x = squeeze_2x2(x, reverse = False)
-            for i in range(self.layers):
-                x = self.modus['VPM{}'.format(i+1)](x, reverse = reverse)
+            for i in range(self.layers_c):
+                x = self.modus['VPC{}'.format(i+1)](x, reverse = reverse)
             x = squeeze_2x2(x, reverse = True).flatten(start_dim = 1)
-            x = self.modus['VPMout'](x, reverse = reverse)
+            for i in range(self.layers_f):
+                x = self.modus['VPF{}'.format(i+1)](x, reverse = reverse)
             x = x.view([-1,shape[1],shape[2],shape[3]])
         return x
         
     def __init_modules(self):
         modules = nn.ModuleDict()
         reverse_mask = True
-        for i in range(self.layers):
-            modules['VPM{}'.format(i+1)] = VPModule_C(self.in_channels, self.channels_hidden, self.out_channels, reverse_mask = reverse_mask)
+        for i in range(self.layers_c):
+            modules['VPC{}'.format(i+1)] = VPModule_C(self.in_channels, self.channels_hidden, self.out_channels, reverse_mask = reverse_mask)
             reverse_mask = not reverse_mask
-        modules['VPMout'] = VPModule_F(self.ind, self.outd)
+        for i in range(self.layers_f):
+            modules['VPF{}'.format(i+1)] = VPModule_F(self.ind, self.outd)
         return modules
             
             

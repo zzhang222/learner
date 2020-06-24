@@ -36,14 +36,15 @@ def main():
     out_channels = 4
     ind = 392
     outd = 392
-    layers = 3
+    layers_c = 0
+    layers_f = 4
     # training
     lr = 0.01
     batch_size = 64
     iterations = 5000
     print_every = 10
     
-    net = ln.nn.VPNN(in_channels, hidden_channels, out_channels, ind, outd, layers)
+    net = ln.nn.VPNN(in_channels, hidden_channels, out_channels, ind, outd, layers_c, layers_f)
     args = {
         'data': data,
         'net': net,
