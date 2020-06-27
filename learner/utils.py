@@ -8,9 +8,6 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-#
-# Useful tools.
-#
 def timing(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -29,16 +26,10 @@ class lazy_property:
         setattr(instance, self.func.__name__, val)
         return val
     
-#
-# Numpy tools.
-#
 def softmax(x):
     e_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
     return e_x / np.sum(e_x, axis=-1, keepdims=True)
 
-#
-# Torch tools.
-#
 def cross_entropy_loss(y_pred, y_label):
     if y_pred.size() == y_label.size():
         return torch.mean(-torch.sum(torch.log_softmax(y_pred, dim=-1) * y_label, dim=-1))
